@@ -14,3 +14,5 @@ To run the project :
 -to compile and upload : make build
 
 You may have to change the PORT depending on wich port your board is plugged.
+
+Yannis Andre OCC1
