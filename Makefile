@@ -12,6 +12,8 @@ compile:
 
 upload: 
 	avrdude -c arduino -p m328p -P $(PORT) -b $(BAUD) -U flash:w:$(TARGET_ELF)
+testusart:
+	sudo minicom -D $(PORT) -b 9600
 
 # this makefile allows the user to automatically compile the project and flash it on the board (make build)
 # this is made for linux OS and may be requiring user to change file path to fit with his own filesystem
