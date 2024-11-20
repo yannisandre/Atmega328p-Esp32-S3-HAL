@@ -5,10 +5,23 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-cortex-m-rt = "0.7.3"
+cortex-m = "0.7"
+cortex-m-rt = "0.7"
 
 [unstable]
 build-std = ["core"]
 
 [profile.release]
 panic = "abort"
+
+[features]
+atmega328p = []
+esp32_s3 = []
+
+[lib]
+name = "personnal_hal"
+path = "src/lib.rs"
+
+[[bin]]
+name = "personnal_hal"
+path = "src/main.rs"

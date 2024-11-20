@@ -1,7 +1,7 @@
 # Atmega328p-Esp8266-HAL
-Hardware abstraction layer for the Atmega328p &amp; Tensilica LX106 (Esp8266) using Rust
+Hardware abstraction layer for the Atmega328p &amp; ESP32-S3 using Rust
 
-Current features implemented : GPIO & USART for Atmega328p
+Current features implemented : GPIO & USART for Atmega328p & ESP32-S3
 
 To run the project :
 
@@ -16,5 +16,6 @@ To run the project :
 -to compile and upload : make build
 
 You may have to change the PORT depending on wich port your board is plugged.
+If you want to change target you'll have to switch some variables in the MakeFile in order to compile and upload
 
 Yannis Andre OCC1
