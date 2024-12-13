@@ -19,3 +19,8 @@ You may have to change the PORT depending on wich port your board is plugged.
 If you want to change target you'll have to switch some variables in the MakeFile in order to compile and upload (read the comments in the Makefile)
 
 Yannis Andre OCC1
+
+
+[CORRECTION USART] (Don't hesitate to remove this part)
+You could try implementing the different USART mode (asynchrone double speed for example) for the Atmega.
+What datasheet are you using for your esp32s3? For the USART feature on this target, some steps are missing, like enabling the clock for example (the internal clock of your device).
