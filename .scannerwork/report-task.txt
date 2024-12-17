@@ -1,0 +1,8 @@
+organization=yannisandre78
+projectKey=yannisandre_Atmega328p-Esp32-S3-HAL
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.58632
+branch=main
+dashboardUrl=https://sonarcloud.io/dashboard?id=yannisandre_Atmega328p-Esp32-S3-HAL&branch=main
+ceTaskId=AZPWRJOcs7uzlmvhA3Oc
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZPWRJOcs7uzlmvhA3Oc
