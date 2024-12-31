@@ -24,3 +24,8 @@ Yannis Andre OCC1
 [CORRECTION USART] (Don't hesitate to remove this part)
 You could try implementing the different USART mode (asynchrone double speed for example) for the Atmega.
 What datasheet are you using for your esp32s3? For the USART feature on this target, some steps are missing, like enabling the clock for example (the internal clock of your device).
+
+
+[CORRECTION SPI] (Don't hesitate to remove this part)
+Good project.
+You could eventually organize your files with folder modules (with all the spi features files in one folder for example).
