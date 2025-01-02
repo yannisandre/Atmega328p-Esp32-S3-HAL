@@ -6,11 +6,11 @@ use personnal_hal::gpio::{Gpio, PinMode}; // import des structures communes aux 
 
 // Import des fonctions pour le GPIO et l'USART de l'ATMEGA
 #[cfg(feature = "atmega328p")]
-use personnal_hal::{AtmegaGpio, atmega_usart_init, atmega_usart_send, atmega_usart_receive, SpiMode, atmega_spi_init, atmega_spi_transceive, atmega_spi_receive};
+use personnal_hal::{AtmegaGpio, atmega_usart_init, atmega_usart_send, atmega_usart_receive, SpiMode, atmega_spi_init, atmega_spi_transceive, atmega_spi_receive, AtmegaI2c};
 
 // Import des fonctions pour le GPIO et l'USART de l'ESP32-S3
 #[cfg(feature = "esp32_s3")]
-use personnal_hal::{Esp32Gpio, esp_usart_init, esp_usart_send, esp_usart_receive, SpiMode, esp_spi_init, esp_spi_receive, esp_spi_transceive};
+use personnal_hal::{Esp32Gpio, esp_usart_init, esp_usart_send, esp_usart_receive, SpiMode, esp_spi_init, esp_spi_receive, esp_spi_transceive, Esp32I2c};
 
 // on definit le débit de communication pour l'USART (9600 bauds)
 const BAUD_RATE: u32 = 9600;
@@ -34,12 +34,12 @@ pub extern "C" fn main() -> ! {
         let message: u8 = atmega_usart_receive();
         */
         
-        
+        /*
          // Test ATMEGA GPIO
         let gpio = AtmegaGpio { pin: 5 };
         gpio.set_mode(PinMode::Output);  // Configure le pin 5 comme sortie
         gpio.write(true);                // Met le pin 5 à high
-        
+        */
 
         /*
         // TEST ATMEGA SPI
@@ -82,9 +82,47 @@ pub extern "C" fn main() -> ! {
         let received_slave = atmega_spi_receive(); // Attend un byte envoyé par le master
         atmega_usart_send(received_slave); // Affiche le byte reçu en slave
         */
+
+        /* TEST ATMEGA I2C
+
+        atmega_usart_init(9600);
+        // debug message
+        let startup_message = b"I2C TEST START\r\n";
+        for &byte in startup_message {
+            atmega_usart_send(byte);
+        }
+
+        // I2C initialization at 100 kHz
+        AtmegaI2c::init(100_000, 16_000_000); // I2C frequency : 100 kHz, CPU frequency : 16 MHz
+
+        // I2C test : fictive slave peripheral
+        let slave_address = 0x50; // Example : EEPROM (classic register)
+
+        // START condition
+        atmega_usart_send(b'S'); // Log START condition sent
+        AtmegaI2c::start();
+
+        // sending of the slave address in write mode
+        AtmegaI2c::write_byte((slave_address << 1) | 0); //  address & writing bit
+
+        // sending datas
+        let test_data: [u8; 3] = [0xDE, 0xAD, 0xBE];
+        for &byte in &test_data {
+            AtmegaI2c::write_byte(byte);
+        }
+
+        // STOP condition
+        AtmegaI2c::stop();
+        atmega_usart_send(b'E'); // log END
+
+        let end_message = b"I2C TEST END\r\n"; // end of the test 
+        for &byte in end_message {
+            atmega_usart_send(byte);
+        }
+        */
     }
 
-    // Tests de l'USART + GPIO pour l'ESP32-S3
+    // Tests de l'USART + GPIO + SPI pour l'ESP32-S3
     #[cfg(feature = "esp32_s3")]
     {
         /*
@@ -96,11 +134,11 @@ pub extern "C" fn main() -> ! {
 
         // Test ESP32-S3 USART
         /*
-        esp32_usart_init(BAUD_RATE); // Configure l'USART à 9600 baud
+        esp_usart_init(BAUD_RATE); // Configure l'USART à 9600 baud
         let message = b"HELLO"; // envoie du message "HELLO" lettre par lettre
         for &byte in message.iter() {
-            esp32_usart_send(byte);
-        let message: u8 = esp32_usart_receive();
+            esp_usart_send(byte);
+        let message: u8 = esp_usart_receive();
         }*/
 
         // TEST SPI ESP32-S3
@@ -144,6 +182,39 @@ pub extern "C" fn main() -> ! {
         let received_slave = esp_spi_receive(); // Attend un byte envoyé par le master
         esp_usart_send(received_slave); // Affiche le byte reçu en slave
         */
+
+        // TEST ESP32-S3 I2C
+        
+        /* Mode Master
+        Esp32I2c::init(true); // true pour le mode master
+
+       
+        Esp32I2c::start(); // envoie une condition START
+
+        let slave_address = 0x50; // on envoie l'adresse esclave en écriture
+        Esp32I2c::write_byte((slave_address << 1) | 0);
+
+        // on envoie des données
+        let test_data: [u8; 3] = [0xDE, 0xAD, 0xBE];
+        for &byte in &test_data {
+            Esp32I2c::write_byte(byte);
+        }
+
+        // on envoie une condition STOP
+        Esp32I2c::stop();
+
+        */
+
+        /* Mode Slave
+
+        Esp32I2c::init(false); // false pour le mode esclave
+
+        // on recoie l'adresse esclave
+        let received_address = Esp32I2c::read_byte(true); // on envoie l'ACK
+
+        let received_data = Esp32I2c::read_byte(false); // on envoie le NACK après le dernier envoie de byte
+        */
+
 
     }
 

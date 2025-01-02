@@ -44,3 +44,15 @@ mod spi_esp32s3;
 pub use spi_esp32s3::SpiMode;
 #[cfg(feature = "esp32_s3")]
 pub use spi_esp32s3::{spi_init as esp_spi_init, spi_transceive as esp_spi_transceive, spi_receive as esp_spi_receive};
+
+// I2C
+
+#[cfg(feature = "atmega328p")]
+mod i2c_atmega328p;
+#[cfg(feature = "atmega328p")]
+pub use i2c_atmega328p::AtmegaI2c;
+
+#[cfg(feature = "esp32_s3")]
+mod i2c_esp32s3;
+#[cfg(feature = "esp32_s3")]
+pub use i2c_esp32s3::Esp32I2c;
