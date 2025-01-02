@@ -34,12 +34,12 @@ pub extern "C" fn main() -> ! {
         let message: u8 = atmega_usart_receive();
         */
         
-        /*
+        
          // Test ATMEGA GPIO
         let gpio = AtmegaGpio { pin: 5 };
         gpio.set_mode(PinMode::Output);  // Configure le pin 5 comme sortie
         gpio.write(true);                // Met le pin 5 à high
-        */
+        
 
         /*
         // TEST ATMEGA SPI
