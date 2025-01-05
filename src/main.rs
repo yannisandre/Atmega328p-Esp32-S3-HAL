@@ -2,15 +2,27 @@
 #![no_main] // pas de fonction main
 
 use core::panic::PanicInfo;
-use personnal_hal::gpio::{Gpio, PinMode}; // import des structures communes aux deux targets pour l'implémentation du GPIO
 
-// Import des fonctions pour le GPIO et l'USART de l'ATMEGA
+// Import des fonctions pour le GPIO, l'USART, le SPI & l'I2C de l'ATMEGA
 #[cfg(feature = "atmega328p")]
-use personnal_hal::{AtmegaGpio, atmega_usart_init, atmega_usart_send, atmega_usart_receive, SpiMode, atmega_spi_init, atmega_spi_transceive, atmega_spi_receive, AtmegaI2c};
+use personnal_hal::gpio::{AtmegaGpio,PinMode,Gpio};
+#[cfg(feature = "atmega328p")]
+use personnal_hal::usart::{atmega_usart_init,atmega_usart_send,atmega_usart_receive};
+#[cfg(feature = "atmega328p")]
+use personnal_hal::spi::{SpiMode,atmega_spi_init,atmega_spi_transceive,atmega_spi_receive};
+#[cfg(feature = "atmega328p")]
+use personnal_hal::i2c::{AtmegaI2c};
 
-// Import des fonctions pour le GPIO et l'USART de l'ESP32-S3
+// Import des fonctions pour le GPIO, l'USART, le SPI & l'I2C de l'ESP32-S3
 #[cfg(feature = "esp32_s3")]
-use personnal_hal::{Esp32Gpio, esp_usart_init, esp_usart_send, esp_usart_receive, SpiMode, esp_spi_init, esp_spi_receive, esp_spi_transceive, Esp32I2c};
+use personnal_hal::gpio::{Esp32Gpio,PinMode,Gpio};
+#[cfg(feature = "esp32_s3")]
+use personnal_hal::usart::{esp_usart_init,esp_usart_send,esp_usart_receive};
+#[cfg(feature = "esp32_s3")]
+use personnal_hal::spi::{SpiMode,esp_spi_init,esp_spi_receive,esp_spi_transceive};
+#[cfg(feature = "esp32_s3")]
+use personnal_hal::i2c::{Esp32I2c};
+
 
 // on definit le débit de communication pour l'USART (9600 bauds)
 const BAUD_RATE: u32 = 9600;
@@ -18,20 +30,23 @@ const BAUD_RATE: u32 = 9600;
 #[no_mangle]
 pub extern "C" fn main() -> ! {
 
-    // Tests de l'USART + GPIO + SPI pour l'ATMEGA
+    // Tests de l'USART + GPIO + SPI + I2C pour l'ATMEGA
     #[cfg(feature = "atmega328p")]
     {
-        // Test ATMEGA USART
-        // Initialisation de la communication USART  avec 9600 bauds
+             
         
         /*
-        atmega_usart_init(9600);
+
+        // Test ATMEGA USART
+
+        atmega_usart_init(9600);  // Initialisation de la communication USART  avec 9600 bauds
 
         let message = b"HELLO";
         for &byte in message.iter() {
             atmega_usart_send(byte); // envoie d'un octet à la fois
         } 
         let message: u8 = atmega_usart_receive();
+        
         */
         
         
@@ -40,11 +55,17 @@ pub extern "C" fn main() -> ! {
         gpio.set_mode(PinMode::Output);  // Configure le pin 5 comme sortie
         gpio.write(true);                // Met le pin 5 à high
         
+        
 
-        /*
+        
         // TEST ATMEGA SPI
         
+        /*
+        
         // Test SPI en mode Master
+
+        atmega_usart_init(9600);
+
         atmega_usart_send(b'S');
         atmega_usart_send(b'P');
         atmega_usart_send(b'I');
@@ -66,6 +87,9 @@ pub extern "C" fn main() -> ! {
 
         /*
         // Test SPI en mode Slave
+
+        atmega_usart_init(9600);
+
         atmega_usart_send(b'S');
         atmega_usart_send(b'P');
         atmega_usart_send(b'I');
@@ -83,7 +107,9 @@ pub extern "C" fn main() -> ! {
         atmega_usart_send(received_slave); // Affiche le byte reçu en slave
         */
 
-        /* TEST ATMEGA I2C
+        // TEST ATMEGA I2C
+
+        /*
 
         atmega_usart_init(9600);
         // debug message
@@ -115,35 +141,47 @@ pub extern "C" fn main() -> ! {
         AtmegaI2c::stop();
         atmega_usart_send(b'E'); // log END
 
-        let end_message = b"I2C TEST END\r\n"; // end of the test 
+        let end_message = b"I2C TEST END\r\n"; // fin du test
         for &byte in end_message {
             atmega_usart_send(byte);
         }
+        
         */
+        
     }
 
-    // Tests de l'USART + GPIO + SPI pour l'ESP32-S3
+    // Tests de l'USART + GPIO + SPI + I2C pour l'ESP32-S3
     #[cfg(feature = "esp32_s3")]
     {
-        /*
+        
         // Test ESP32-S3 GPIO
+
+        /*
+
         let gpio = Esp32Gpio { pin: 5};
         gpio.set_mode(PinMode::Output);  
         gpio.write(true);  
+
         */
+        
 
         // Test ESP32-S3 USART
+
         /*
+        
         esp_usart_init(BAUD_RATE); // Configure l'USART à 9600 baud
         let message = b"HELLO"; // envoie du message "HELLO" lettre par lettre
         for &byte in message.iter() {
             esp_usart_send(byte);
         let message: u8 = esp_usart_receive();
-        }*/
+        }
+
+        */
 
         // TEST SPI ESP32-S3
 
         /*
+
         // Test SPI en mode Master
         esp_usart_send(b'S');
         esp_usart_send(b'P');
@@ -161,10 +199,11 @@ pub extern "C" fn main() -> ! {
         esp_spi_init(SpiMode::Master);
         let received_master = esp_spi_transceive(0x55); // Envoi d'un byte (0x55)
         esp_usart_send(received_master); // Affiche le byte reçu en master
+        
         */
         
-
         /*
+        
         // Test SPI en mode Slave
         esp_usart_send(b'S');
         esp_usart_send(b'P');
@@ -181,11 +220,16 @@ pub extern "C" fn main() -> ! {
         esp_spi_init(SpiMode::Slave);
         let received_slave = esp_spi_receive(); // Attend un byte envoyé par le master
         esp_usart_send(received_slave); // Affiche le byte reçu en slave
+
         */
+        
 
         // TEST ESP32-S3 I2C
         
-        /* Mode Master
+        // Mode Master
+
+        /*
+
         Esp32I2c::init(true); // true pour le mode master
 
        
@@ -205,7 +249,9 @@ pub extern "C" fn main() -> ! {
 
         */
 
-        /* Mode Slave
+        /*
+        
+        // Mode Slave
 
         Esp32I2c::init(false); // false pour le mode esclave
 
@@ -213,6 +259,7 @@ pub extern "C" fn main() -> ! {
         let received_address = Esp32I2c::read_byte(true); // on envoie l'ACK
 
         let received_data = Esp32I2c::read_byte(false); // on envoie le NACK après le dernier envoie de byte
+        
         */
 
 

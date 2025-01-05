@@ -1,6 +1,5 @@
 use core::ptr;
 use core::panic;
-use crate::gpio::{Gpio, PinMode};
 
 const DDRD: *mut u8 = 0x2A as *mut u8;
 const PORTD: *mut u8 = 0x2B as *mut u8;
@@ -9,6 +8,20 @@ const PIND: *const u8 = 0x29 as *const u8;
 const DDRB: *mut u8 = 0x24 as *mut u8;
 const PORTB: *mut u8 = 0x25 as *mut u8;
 const PINB: *const u8 = 0x23 as *const u8;
+
+
+#[derive(PartialEq)] // définit la gestion du == entre deux instances de PinMode
+pub enum PinMode {
+    Input,
+    Output,
+}
+
+pub trait Gpio { // implémenter Gpio force le fait de définir les trois fonctions suivantes
+    fn set_mode(&self, mode: PinMode);
+    fn write(&self, value: bool);
+    fn read(&self) -> bool;
+}
+
 
 pub struct AtmegaGpio {
     pub pin: u8,
